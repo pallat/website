@@ -60,22 +60,23 @@ func Main() {
 			port = _port
 		}
 
+		mux := http.NewServeMux()
 		httpAddr = host + ":" + port
 
-		if err := initTour(http.DefaultServeMux, "SocketTransport"); err != nil {
+		if err := initTour(mux, "SocketTransport"); err != nil {
 			log.Fatal(err)
 		}
 
-		http.HandleFunc("/", rootHandler)
-		http.HandleFunc("/_/fmt", fmtHandler)
+		mux.HandleFunc("/", rootHandler)
+		mux.HandleFunc("/_/fmt", fmtHandler)
 		fs := http.FileServer(http.FS(contentTour))
-		http.Handle("/favicon.ico", fs)
-		http.Handle("/images/", fs)
+		mux.Handle("/favicon.ico", fs)
+		mux.Handle("/images/", fs)
 
 		// origin := &url.URL{Scheme: "http", Host: host + ":" + port}
 		// http.Handle(socketPath, socket.NewHandler(origin))
 
-		h := webtest.HandlerWithCheck(http.DefaultServeMux, "/_readycheck",
+		h := webtest.HandlerWithCheck(mux, "/_readycheck",
 			os.DirFS("."), "tour/testdata/*.txt")
 		log.Fatal(http.ListenAndServe(httpAddr, &logging{h}))
 
