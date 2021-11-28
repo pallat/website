@@ -9,8 +9,11 @@ import (
 	"bytes"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/website/internal/webtest"
 )
 
 func RegisterHandlers(mux *http.ServeMux) error {
@@ -68,3 +71,45 @@ func gaePrepContent(in io.Reader) io.Reader {
 // gaeSocketAddr returns the WebSocket handler address.
 // The App Engine version does not provide a WebSocket handler.
 func gaeSocketAddr() string { return "" }
+
+func gaeMain() {
+	prepContent = gaePrepContent
+	socketAddr = gaeSocketAddr
+	analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+
+	mux := http.NewServeMux()
+
+	if err := initTourOrg(mux, "HTTPTransport"); err != nil {
+		log.Fatal(err)
+	}
+
+	mux.Handle("/", hstsHandler(rootHandler))
+	mux.Handle("/lesson/", hstsHandler(lessonHandler))
+
+	registerStatic()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	h := webtest.HandlerWithCheck(mux, "/_readycheck",
+		os.DirFS("."), "tour/testdata/*.txt")
+
+	log.Fatal(http.ListenAndServe(":"+port, h))
+}
+
+func hstsHandler(fn http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; preload")
+		fn(w, r)
+	})
+}
+
+func registerStatic() {
+	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/_/fmt", fmtHandler)
+	fs := http.FileServer(http.FS(contentTour))
+	http.Handle("/favicon.ico", fs)
+	http.Handle("/images/", fs)
+}

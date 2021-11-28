@@ -1,0 +1,7 @@
+runtime: go116
+main: ./tour
+
+handlers:
+  - url: /.*
+    script: auto
+    secure: always

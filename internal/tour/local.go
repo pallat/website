@@ -39,6 +39,12 @@ func Main() {
 
 	flag.Parse()
 
+	if os.Getenv("GAE_ENV") == "standard" {
+		log.Println("running in App Engine Standard mode")
+		gaeMain()
+		return
+	}
+
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
 		log.Fatal(err)

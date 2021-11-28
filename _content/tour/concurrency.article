@@ -1,87 +1,94 @@
 Concurrency
-Go provides concurrency constructions as part of the core language. This lesson presents them and gives some examples on how they can be used.
+Go เตรียมวิธีการทำ concurrency ให้ซึ่งเป็นแกนหลักของตัวภาษา ในบทเรียนนี้จะนำมาแสดงให้เห็นตัวอย่างว่ามันทำงานอย่างไร
 
 The Go Authors
 https://golang.org
 
 * Goroutines
 
-A _goroutine_ is a lightweight thread managed by the Go runtime.
+_goroutine_ คือ thread แบบเบาๆ ที่ถูกจัดการโดย runtime ของ Go
 
 	go f(x, y, z)
 
-starts a new goroutine running
+ให้ goroutine เริ่มทำงาน
 
 	f(x, y, z)
 
-The evaluation of `f`, `x`, `y`, and `z` happens in the current goroutine and the execution of `f` happens in the new goroutine.
+การประมวลค่าของ `f`, `x`, `y`, และ `z` จะเกิดขึ้นใน goroutine ปัจจุบัน และการทำงานของ `f` จะไปเกิดที่ goroutine ตัวใหม่
 
-Goroutines run in the same address space, so access to shared memory must be synchronized. The [[https://golang.org/pkg/sync/][`sync`]] package provides useful primitives, although you won't need them much in Go as there are other primitives. (See the next slide.)
+goroutine จะทำงานอยู่ในพื้นที่ในหน่วยความจำเดียวกันทั้งหมด เพราะฉะนั้นการใช้ หน่วยความจำร่วมกัน
+จะต้องจัดการเรื่องการซิงค์กันให้ดี
+แพ็คเกจ [[https://golang.org/pkg/sync/][`sync`]] ได้เตรียมเครื่องมืออำนวยความสะดวกให้บ้างแล้ว
+อย่างไรก็ดี คุณอาจจะไม่ต้องใช้มันมากนักเพราะ Go ยังมีเครื่องมือพื้นฐานอีกหลายตัว (ดูในหน้าถัดไป)
 
 .play concurrency/goroutines.go
 
 * Channels
 
-Channels are a typed conduit through which you can send and receive values with the channel operator, `<-`.
+channel เป็นการเชื่อม type เข้าด้วยกัน โดยคุณสามารถส่งและรับค่า ผ่านตัวดำเนินการ `<-`
 
 	ch <- v    // Send v to channel ch.
 	v := <-ch  // Receive from ch, and
 	           // assign value to v.
 
-(The data flows in the direction of the arrow.)
+(ข้อมูลจะไหลตามทิศทางของลูกศร)
 
-Like maps and slices, channels must be created before use:
+channel เหมือนกับ map และ slice ตรงที่ต้องสร้างมันขึ้นมาก่อนถึงจะนำไปใช้ได้:
 
 	ch := make(chan int)
 
-By default, sends and receives block until the other side is ready. This allows goroutines to synchronize without explicit locks or condition variables.
+โดยปกติ การส่งและการรับ จะถูกบล็อคไว้ จนกว่าอีกฝั่งจะพร้อม
+นั่นแปลว่า goroutine จะสามารถซิงค์กันได้โดยปริยาย โดยไม่ต้องจงใจล็อคหรือไปสร้างเงื่อนไขด้วยตัวแปรอะไรอื่น
 
-The example code sums the numbers in a slice, distributing the work between two goroutines.
-Once both goroutines have completed their computation, it calculates the final result.
+โค้ดตัวอย่างนี้จะรวมเลขใน slice ด้วยการกระจายงานออกไปให้ goroutine สองตัว
+เมื่อทั้งคู่ทำงานเสร็จ มันจะนำมาคำนวณผลลัพธ์สุดท้ายอีกที
 
 .play concurrency/channels.go
 
 * Buffered Channels
 
-Channels can be _buffered_.  Provide the buffer length as the second argument to `make` to initialize a buffered channel:
+channel สามารถ _อมค่า_ ไว้ได้ด้วยการให้ความยาวบัพเฟอร์ไปเป็นอากิวเม้นต์ตัวที่สองใน `make`
+วิธีสร้าง buffered channel ทำแบบนี้:
 
 	ch := make(chan int, 100)
 
-Sends to a buffered channel block only when the buffer is full. Receives block when the buffer is empty.
+การส่งค่าเข้าไปใน buffered channel จะถูกบล็อคเมื่อบัฟเฟอร์เต็ม ส่วนการรับจะถูกบล็อค ถ้าบัฟเฟอร์เป็นค่าว่าง
 
-Modify the example to overfill the buffer and see what happens.
+ทดลองแก้ตัวอย่างด้วยการใส่ของให้ล้นบัฟเฟอร์แล้วสักเกตว่าจะเกิดอะไรขึ้น
 
 .play concurrency/buffered-channels.go
 
 * Range and Close
 
-A sender can `close` a channel to indicate that no more values will be sent. Receivers can test whether a channel has been closed by assigning a second parameter to the receive expression: after
+ผู้ส่งสามารถที่จะสั่ง `close` channel ถ้ามั่นใจว่าไม่มีของจะส่งให้แล้ว
+ส่วนฝั่งผู้รับสามารถตรวจสอบได้ว่า channel ถูกปิดไปแล้วหรือยัง ด้วยการรับค่าที่สองออกมา
 
 	v, ok := <-ch
 
-`ok` is `false` if there are no more values to receive and the channel is closed.
+`ok` เป็น `false` ถ้าไม่มีค่าส่งมาให้อีกต่อไปและ channel ถูกปิดไปแล้ว
 
-The loop `for`i`:=`range`c` receives values from the channel repeatedly until it is closed.
+ลูป `for`i`:=`range`c` จะรับค่าออกมาจาก channel ไปเรื่อยๆ จนกว่ามันจะถูกปิด
 
-*Note:* Only the sender should close a channel, never the receiver. Sending on a closed channel will cause a panic.
+*คำเตือน:* ผู้ส่งเท่านั้นที่สามารถปิด channel อย่าให้ผู้รับเป็นตัวทำเด็ดขาด เพราะการส่งของเข้าไปใน channel ที่ปิดไปแล้วจะทำให้เกิด panic
 
-*Another*note:* Channels aren't like files; you don't usually need to close them. Closing is only necessary when the receiver must be told there are no more values coming, such as to terminate a `range` loop.
+*อีกข้อแนะนำ:* อย่าเห็น channel เป็นเหมือน file คุณไม่จำเป็นต้องไป close มัน การ close นั้นจำเป็นเฉพาะเมื่อมีความต้องการที่จะบอกผู้รับให้รู้ว่า จากนี้จะไม่มีข้อมูลส่งไปแล้ว คล้ายๆกับการจบลูป `range`
 
 .play concurrency/range-and-close.go
 
 * Select
 
-The `select` statement lets a goroutine wait on multiple communication operations.
+`select` จะช่วยให้สามารถรอ goroutine ที่คุยไว้พร้อมกันหลายๆ ตัวได้
 
-A `select` blocks until one of its cases can run, then it executes that case.  It chooses one at random if multiple are ready.
+การบล็อคของ `select` จะถูกปล่อยให้ผ่านเมื่อหนึ่งในเคสที่รออยู่มาถึง และมันจะทำงานที่เคสนั้น
+แต่ถ้ามาพร้อมกันหลายๆ ตัว มันจะสุ่มเลือกเลย
 
 .play concurrency/select.go
 
 * Default Selection
 
-The `default` case in a `select` is run if no other case is ready.
+เคส `default` ใน `select` จะทำงานเมื่อไม่มีเคสไหนพร้อมทำงานเลย
 
-Use a `default` case to try a send or receive without blocking:
+การใช้ `default` มักจะใช้เมื่อพยายามจะส่งหรือรับข้อมูลโดยไม่ถูกบล็อค
 
 	select {
 	case i := <-c:
@@ -94,13 +101,15 @@ Use a `default` case to try a send or receive without blocking:
 
 * Exercise: Equivalent Binary Trees
 
-There can be many different binary trees with the same sequence of values stored in it. For example, here are two binary trees storing the sequence 1, 1, 2, 3, 5, 8, 13.
+การเก็บค่าใน binary tree ด้วยชุดข้อมูลเดียวกัน สามารถเก็บได้หลายรูปแบบ ตัวอย่างเช่น
+binary tree ทั้งสองตัวนี้ เก็บลำดับข้อมูลเดียวกันคือ 1, 1, 2, 3, 5, 8, 13
 
-.image /tour/static/img/tree.png
+.image /content/img/tree.png
 
-A function to check whether two binary trees store the same sequence is quite complex in most languages. We'll use Go's concurrency and channels to write a simple solution.
+การเขียนฟังก์ชั่นมาตรวจสอบว่าทั้งสอง binary tree นี้เก็บข้อมูลชุดเดียวกันหรือไม่นั้น ค่อนข้างมีความซับซ้อนในแต่ละภาษาต่างกันไป
+เราจะใช้ concurrency และ channel ของ Go มาเขียนเพื่อแก้โจทย์นี้ให้ง่ายขึ้น
 
-This example uses the `tree` package, which defines the type:
+ตัวอย่างนี้ใช้ type ที่กำหนดขึ้นจากแพ็คเกจ `tree`:
 
 	type Tree struct {
 		Left  *Tree
@@ -109,100 +118,98 @@ This example uses the `tree` package, which defines the type:
 	}
 
 
-Continue description on [[javascript:click('.next-page')][next page]].
+อธิบายต่อที่ [[javascript:click('.next-page')][next page]]
 
 * Exercise: Equivalent Binary Trees
 
-*1.* Implement the `Walk` function.
+*1.* ทำฟังก์ชั่น `Walk`
 
-*2.* Test the `Walk` function.
+*2.* ทดสอบฟังก์ชั่น `Walk`
 
-The function `tree.New(k)` constructs a randomly-structured (but always sorted) binary tree holding the values `k`, `2k`, `3k`, ..., `10k`.
+ฟังก์ชั่น `tree.New(k)` จะสุ่มโครงสร้างขึ้นมาให้ตัวหนึ่ง (แต่เรียงลำดับมาให้) ซึ่ง binary tree นั้นจะเก็บข้อมูล `k`, `2k`, `3k`, ..., `10k` เอาไว้
 
-Create a new channel `ch` and kick off the walker:
+สร้าง channel มาตัวหนึ่งชื่อ `ch` และให้มันเดินเข้าไปเลย
 
 	go Walk(tree.New(1), ch)
 
-Then read and print 10 values from the channel. It should be the numbers 1, 2, 3, ..., 10.
+จากนั้นให้อ่านและพิพม์ทั้ง 10 ค่าออกมาจาก channel มันควรจะเป็นเลข 1, 2, 3, ..., 10
 
-*3.* Implement the `Same` function using `Walk` to determine whether `t1` and `t2` store the same values.
+*3.* เขียนฟังก์ชั่น `Same` โดยใช้ `Walk` เพื่อตรวจสอบว่า `t1` และ `t2` เก็บค่าเดียวกันหรือไม่
 
-*4.* Test the `Same` function.
+*4.* ทดสอบฟังก์ชั่น `Same`
 
-`Same(tree.New(1),`tree.New(1))` should return true, and `Same(tree.New(1),`tree.New(2))` should return false.
+`Same(tree.New(1),`tree.New(1))` ควรได้ค่า true และ `Same(tree.New(1),`tree.New(2))` ควรได้ค่า false.
 
-The documentation for `Tree` can be found [[https://godoc.org/golang.org/x/tour/tree#Tree][here]].
+เอกสารของ `Tree` หาได้ที่ [[https://godoc.org/golang.org/x/tour/tree#Tree][here]]
 
 .play concurrency/exercise-equivalent-binary-trees.go
 
 * sync.Mutex
 
-We've seen how channels are great for communication among goroutines.
+เราได้เห็นสุดยอดการสื่อสารระหว่าง goroutine ไปแล้ว
 
-But what if we don't need communication? What if we just want to make sure only
-one goroutine can access a variable at a time to avoid conflicts?
+แล้วถ้าเกิดว่าเราไม่ได้อยากจะให้มันคุยกันล่ะ? มีวิธีไหนถ้าเราแค่อยากมั่นใจว่า ในเวลาใดเวลาหนึ่งจะมี
+แค่หนึ่ง goroutine เท่านั้นที่เข้าถึงตัวแปรตัวหนึ่งได้โดยไม่แย่งกัน?
 
-This concept is called _mutual_exclusion_, and the conventional name for the data structure that provides it is _mutex_.
+แนวคิดนี้เรียกว่า _mutual_exclusion_ และเรามักจะตั้งชื่อให้โครงสร้างข้อมูล พวกนี้ให้ง่ายขึ้นว่า _mutex_
 
-Go's standard library provides mutual exclusion with
-[[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]] and its two methods:
+ในไลบรารี่มาตรฐานของ Go ได้เตรียม mutual exclusion ไว้แล้วที่ [[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]]
+มันมีสองเมธอดคือ:
 
 - `Lock`
 - `Unlock`
 
-We can define a block of code to be executed in mutual exclusion by surrounding it
-with a call to `Lock` and `Unlock` as shown on the `Inc` method.
+เราสามารถกำหนดบล็อคของโค้ดให้ทำใน mutual exclusion ด้วยการครอบมันด้วยการเรียก 
+`Lock` และ `Unlock` แบบที่แสดงให้เห็นในเมธอด `Inc`
 
-We can also use `defer` to ensure the mutex will be unlocked as in the `Value` method.
+เรายังสามารถใช้ `defer` เข้ามาเพื่อให้มั่นใจว่า muxtex จะถูกปลดล็อคได้ด้วย เหมือนที่ทำในเมธอด `Value`
 
 .play concurrency/mutex-counter.go
 
 * Exercise: Web Crawler
 
-In this exercise you'll use Go's concurrency features to parallelize a web crawler.
+ในแบบฝึกหัดนี้ คุณจะได้ใช้คุณสมบัติ concurrency ของ Go เพื่อไปรวบรวมข้อมูลจากเว็บ แบบ parallelize
 
-Modify the `Crawl` function to fetch URLs in parallel without fetching the same URL twice.
+ลองแก้ไขฟังก์ชั่น `Crawl` ให้ดึงข้อมูลจาก URL หลายๆ ที่พร้อมๆ กัน โดยห้ามดึงมาจาก URL เดียวกันซ้ำ
 
-_Hint_: you can keep a cache of the URLs that have been fetched on a map, but maps alone are not
-safe for concurrent use!
+_ตัวช่วย_:  คุณสามารถเก็บแคชของแต่ละ URL ที่ดึงมาไว้ใน map แต่ก็อีกนั่นแหล่ะ map ตัวเดียวโดดๆ ก็ไม่ปลอดภัยที่จะเอามาใช้แบบ concurrent!
 
 .play concurrency/exercise-web-crawler.go
 
 * Where to Go from here...
 
-#appengine: You can get started by
+#appengine: คุณสามารถเริ่มต้นที่
 #appengine: [[https://golang.org/dl/][installing Go]].
 
-#appengine: Once you have Go installed, the
-The
-[[https://golang.org/doc/][Go Documentation]] is a great place to
-#appengine: continue.
-start.
-It contains references, tutorials, videos, and more.
+#appengine: เมื่อใดที่คุณติดตั้ง Go แล้ว
+[[https://golang.org/doc/][Go Documentation]] เป็นที่ๆ ดีสำหรับการ
+#appengine: ไปต่อ
+เริ่มต้น
+มันจะเต็มไปด้วยแหล่งอ้างอิง แบบฝึกหัด วีดีโอและอื่นๆ อีกมาก
 
-To learn how to organize and work with Go code, read [[https://golang.org/doc/code][How to Write Go Code]].
+อ่าน [[https://golang.org/doc/code][How to Write Go Code]] เพื่อเรียนรู้วิธีการจัดการและการทำงานกับโค้ด Go
 
-If you need help with the standard library, see the [[https://golang.org/pkg/][package reference]]. For help with the language itself, you might be surprised to find the [[https://golang.org/ref/spec][Language Spec]] is quite readable.
+ถ้าคุณต้องการตัวช่วยเกี่ยวกับไลบรารี่มาตรฐาน ให้ไปที่ [[https://golang.org/pkg/][package reference]] ส่วนตัวช่วยที่เกี่ยวกับตัวภาษาเอง คุณอาจจะแปลกใจถ้าไปดูที่ [[https://golang.org/ref/spec][Language Spec]] มันค่อนข้างอ่านง่ายเลยทีเดียว
 
-To further explore Go's concurrency model, watch
+หากอยากศึกษาเพิ่มเติมเกี่ยวกับรูปแบบของ concurrency ใน Go ลองดู
 [[https://www.youtube.com/watch?v=f6kdp27TYZs][Go Concurrency Patterns]]
-([[https://go.dev/talks/2012/concurrency.slide][slides]])
-and
+([[https://talks.golang.org/2012/concurrency.slide][slides]])
+และ
 [[https://www.youtube.com/watch?v=QDDwwePbDtw][Advanced Go Concurrency Patterns]]
-([[https://go.dev/talks/2013/advconc.slide][slides]])
-and read the
+([[https://talks.golang.org/2013/advconc.slide][slides]])
+และอ่าน
 [[https://golang.org/doc/codewalk/sharemem/][Share Memory by Communicating]]
-codewalk.
+เพื่อไล่โค้ด
 
-To get started writing web applications, watch
+ถ้าอยากเริ่มเขียน web applications ลองดูที่
 [[https://vimeo.com/53221558][A simple programming environment]]
-([[https://go.dev/talks/2012/simple.slide][slides]])
-and read the
-[[https://golang.org/doc/articles/wiki/][Writing Web Applications]] tutorial.
+([[https://talks.golang.org/2012/simple.slide][slides]])
+และอ่าน แบบฝึกหัด
+[[https://golang.org/doc/articles/wiki/][Writing Web Applications]]
 
-The [[https://golang.org/doc/codewalk/functions/][First Class Functions in Go]] codewalk gives an interesting perspective on Go's function types.
+ไล่โค้ดที่ [[https://golang.org/doc/codewalk/functions/][First Class Functions in Go]] จะให้มุมมองที่น่าสนใจเกี่ยวกับ type ของฟังก์ชั่นใน Go
 
-The [[https://blog.golang.org/][Go Blog]] has a large archive of informative Go articles.
+ที่ [[https://blog.golang.org/][Go Blog]] เป็นคลังของบทความของ Go ที่ใหญ่มาก
 
-Visit [[https://golang.org][golang.org]] for more.
+สุดท้าย ไปเยี่ยม [[https://golang.org][golang.org]] บ่อยๆ นะ
 
