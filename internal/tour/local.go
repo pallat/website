@@ -60,6 +60,7 @@ func Main() {
 
 	if _port := os.Getenv("PORT"); _port != "" {
 		port = _port
+		socketAddr = gaeSocketAddr
 	}
 
 	httpAddr = host + ":" + port
