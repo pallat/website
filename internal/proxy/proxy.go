@@ -44,7 +44,7 @@ var cacheControlHeader = fmt.Sprintf("public, max-age=%d", int(expires.Seconds()
 // proxying to the actual play.golang.org, so that we avoid cross-site requests
 // in the browser.
 func RegisterHandlers(mux *http.ServeMux) {
-	for _, host := range []string{"golang.org", "go.dev/_", "golang.google.cn"} {
+	for _, host := range []string{"golang.org", "go.dev/_", "golang.google.cn", "go-tour-th.appspot.com/_"} {
 		mux.HandleFunc(host+"/compile", compile)
 		if host != "golang.google.cn" {
 			mux.HandleFunc(host+"/share", share)
