@@ -259,7 +259,7 @@ func initScript(mux *http.ServeMux, socketAddr, transport string) error {
 		return err
 	}
 	s := string(f)
-	s = strings.ReplaceAll(s, "{{.SocketAddr}}", "")
+	s = strings.ReplaceAll(s, "{{.SocketAddr}}", socketAddr)
 	s = strings.ReplaceAll(s, "{{.Transport}}", transport)
 	b.WriteString(s)
 

@@ -72,8 +72,8 @@ func Main() {
 		http.Handle("/favicon.ico", fs)
 		http.Handle("/images/", fs)
 
-		origin := &url.URL{Scheme: "http", Host: host + ":" + port}
-		http.Handle(socketPath, socket.NewHandler(origin))
+		// origin := &url.URL{Scheme: "http", Host: host + ":" + port}
+		// http.Handle(socketPath, socket.NewHandler(origin))
 
 		h := webtest.HandlerWithCheck(http.DefaultServeMux, "/_readycheck",
 			os.DirFS("."), "tour/testdata/*.txt")
