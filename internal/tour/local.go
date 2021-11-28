@@ -39,14 +39,6 @@ func Main() {
 
 	flag.Parse()
 
-	// if os.Getenv("GAE_ENV") == "standard" {
-	// 	log.Println("running in App Engine Standard mode")
-	// 	prepContent = gaePrepContent
-	// 	socketAddr = gaeSocketAddr
-	//  analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
-	// 	return
-	// }
-
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
 		log.Fatal(err)
@@ -58,10 +50,39 @@ func Main() {
 		log.Print(localhostWarning)
 	}
 
-	if _port := os.Getenv("PORT"); _port != "" {
-		port = _port
+	if os.Getenv("GAE_ENV") == "standard" {
+		log.Println("running in App Engine Standard mode")
 		prepContent = gaePrepContent
 		socketAddr = gaeSocketAddr
+		analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+
+		if _port := os.Getenv("PORT"); _port != "" {
+			port = _port
+		}
+
+		httpAddr = host + ":" + port
+
+		if err := initTour(http.DefaultServeMux, "SocketTransport"); err != nil {
+			log.Fatal(err)
+		}
+
+		http.HandleFunc("/", rootHandler)
+		http.HandleFunc("/_/fmt", fmtHandler)
+		fs := http.FileServer(http.FS(contentTour))
+		http.Handle("/favicon.ico", fs)
+		http.Handle("/images/", fs)
+
+		origin := &url.URL{Scheme: "http", Host: host + ":" + port}
+		http.Handle(socketPath, socket.NewHandler(origin))
+
+		h := webtest.HandlerWithCheck(http.DefaultServeMux, "/_readycheck",
+			os.DirFS("."), "tour/testdata/*.txt")
+		log.Fatal(http.ListenAndServe(httpAddr, &logging{h}))
+
+		return
+	}
+	if _port := os.Getenv("PORT"); _port != "" {
+		port = _port
 	}
 
 	httpAddr = host + ":" + port
