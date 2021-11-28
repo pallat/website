@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"golang.org/x/tools/playground/socket"
+	"golang.org/x/website/internal/proxy"
 	"golang.org/x/website/internal/webtest"
 )
 
@@ -60,6 +61,7 @@ func Main() {
 		mux := http.NewServeMux()
 		httpAddr = host + ":" + port
 
+		proxy.RegisterHandlers(mux)
 		if err := RegisterHandlers(mux); err != nil {
 			log.Fatal(err)
 		}
