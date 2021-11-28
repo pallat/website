@@ -39,11 +39,13 @@ func Main() {
 
 	flag.Parse()
 
-	// if os.Getenv("GAE_ENV") == "standard" {
-	// 	log.Println("running in App Engine Standard mode")
-	// 	gaeMain()
-	// 	return
-	// }
+	if os.Getenv("GAE_ENV") == "standard" {
+		log.Println("running in App Engine Standard mode")
+		prepContent = gaePrepContent
+		socketAddr = gaeSocketAddr
+		analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+		return
+	}
 
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
@@ -55,6 +57,11 @@ func Main() {
 	if host != "127.0.0.1" && host != "localhost" {
 		log.Print(localhostWarning)
 	}
+
+	if p := os.Getenv("PORT"); p != "" {
+		port = p
+	}
+
 	httpAddr = host + ":" + port
 
 	if err := initTour(http.DefaultServeMux, "SocketTransport"); err != nil {

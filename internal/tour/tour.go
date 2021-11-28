@@ -70,44 +70,6 @@ func initTour(mux *http.ServeMux, transport string) error {
 	return initScript(mux, socketAddr(), transport)
 }
 
-func initTourOrg(mux *http.ServeMux, transport string) error {
-	// Make sure playground is enabled before rendering.
-	present.PlayEnabled = true
-
-	// Set up templates.
-	tmpl, err := present.Template().ParseFS(contentTour, "tour/template/action.tmpl")
-	if err != nil {
-		return fmt.Errorf("parse templates: %v", err)
-	}
-
-	// Init lessons.
-	if err := initLessons(tmpl); err != nil {
-		return fmt.Errorf("init lessons: %v", err)
-	}
-
-	// Init UI.
-	ui, err := template.ParseFS(contentTour, "tour/template/index.tmpl")
-	if err != nil {
-		return fmt.Errorf("parse index.tmpl: %v", err)
-	}
-	buf := new(bytes.Buffer)
-
-	data := struct {
-		AnalyticsHTML template.HTML
-	}{analyticsHTML}
-
-	if err := ui.Execute(buf, data); err != nil {
-		return fmt.Errorf("render UI: %v", err)
-	}
-	uiContent = buf.Bytes()
-
-	mux.HandleFunc("/", rootHandler)
-	mux.HandleFunc("/lesson/", lessonHandler)
-	mux.Handle("/static/", http.FileServer(http.FS(contentTour)))
-
-	return initScript(mux, socketAddr(), transport)
-}
-
 // initLessonss finds all the lessons in the content directory, renders them,
 // using the given template and saves the content in the lessons map.
 func initLessons(tmpl *template.Template) error {
