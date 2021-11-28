@@ -52,9 +52,6 @@ func Main() {
 
 	if os.Getenv("GAE_ENV") == "standard" {
 		log.Println("running in App Engine Standard mode")
-		prepContent = gaePrepContent
-		socketAddr = gaeSocketAddr
-		analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
 
 		if _port := os.Getenv("PORT"); _port != "" {
 			port = _port
@@ -63,7 +60,7 @@ func Main() {
 		mux := http.NewServeMux()
 		httpAddr = host + ":" + port
 
-		if err := initTour(mux, "SocketTransport"); err != nil {
+		if err := RegisterHandlers(mux); err != nil {
 			log.Fatal(err)
 		}
 
