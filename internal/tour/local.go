@@ -39,13 +39,13 @@ func Main() {
 
 	flag.Parse()
 
-	if os.Getenv("GAE_ENV") == "standard" {
-		log.Println("running in App Engine Standard mode")
-		// prepContent = gaePrepContent
-		socketAddr = gaeSocketAddr
-		// analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
-		return
-	}
+	// if os.Getenv("GAE_ENV") == "standard" {
+	// 	log.Println("running in App Engine Standard mode")
+	// 	prepContent = gaePrepContent
+	// 	socketAddr = gaeSocketAddr
+	// 	// analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+	// 	return
+	// }
 
 	host, port, err := net.SplitHostPort(*httpListen)
 	if err != nil {
