@@ -41,9 +41,9 @@ func Main() {
 
 	if os.Getenv("GAE_ENV") == "standard" {
 		log.Println("running in App Engine Standard mode")
-		prepContent = gaePrepContent
+		// prepContent = gaePrepContent
 		socketAddr = gaeSocketAddr
-		analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+		// analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
 		return
 	}
 
@@ -58,8 +58,8 @@ func Main() {
 		log.Print(localhostWarning)
 	}
 
-	if p := os.Getenv("PORT"); p != "" {
-		port = p
+	if _port := os.Getenv("PORT"); _port != "" {
+		port = _port
 	}
 
 	httpAddr = host + ":" + port
