@@ -43,7 +43,7 @@ func Main() {
 	// 	log.Println("running in App Engine Standard mode")
 	// 	prepContent = gaePrepContent
 	// 	socketAddr = gaeSocketAddr
-	// 	// analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
+	//  analyticsHTML = template.HTML(os.Getenv("TOUR_ANALYTICS"))
 	// 	return
 	// }
 
@@ -60,6 +60,7 @@ func Main() {
 
 	if _port := os.Getenv("PORT"); _port != "" {
 		port = _port
+		prepContent = gaePrepContent
 		socketAddr = gaeSocketAddr
 	}
 
