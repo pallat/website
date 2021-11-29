@@ -1,178 +1,168 @@
 Flow control statements: for, if, else, switch and defer
-Learn how to control the flow of your code with conditionals, loops, switches and defers.
+เรียนรู้วิธีการควบคุมโฟลวในโค้ดด้วยการใส่เงื่อนไข วนลูป ตัวเลือก และ defer
 
 The Go Authors
 https://golang.org
 
 * For
 
-Go has only one looping construct, the `for` loop.
+Go มีวิธีการวบลูปแบบเดียวด้วยการใช้ `for`
 
-The basic `for` loop has three components separated by semicolons:
+พื้นฐานของ `for` จะประกอบไปด้วยสามส่วนแยกกันด้วยเครื่องหมายเซมิโคลอน:
 
-- the init statement: executed before the first iteration
-- the condition expression: evaluated before every iteration
-- the post statement: executed at the end of every iteration
+- ส่วนกำหนดค่าเริ่มต้น: ถูกทำก่อนเริ่มวนรอบแรก
+- ส่วนของเงื่อนไข: ถูกคำนวณก่อนจะเริ่มทำงานในแต่ละรอบ
+- ส่วนปิดท้าย: ถูกทำหลังจากจบการทำงานในแต่ละรอบ
 
-The init statement will often be a short variable declaration, and the
-variables declared there are visible only in the scope of the `for`
-statement.
+ส่วนกำหนดค่าเริ่มต้นนั้นมักจะเป็นการประการตัวแปรแบบสั้นๆ และเมื่อประกาศแล้วมันจะมีตัวตนอยู่เพียง
+แค่ในขอบเขตของ `for` เท่านั้น
 
-The loop will stop iterating once the boolean condition evaluates to `false`.
+ลูปจะหยุดทันทีเมื่อเงื่อนไขถูกตัดสินว่าเป็น `false`
 
-*Note:* Unlike other languages like C, Java, or JavaScript there are no parentheses
-surrounding the three components of the `for` statement and the braces `{`}` are
-always required.
+*สังเกตว่า:* จุดที่แตกต่างจากภาษาอื่นๆ อย่าง C, Java หรือ JavaScript ก็คือมันไม่ต้องมีวงเล็บครอบ
+องค์ประกอบทั้งสามส่วนของ `for` และอีกอย่างคือวงเล็บปีกา `{`}` จะต้องใส่ไว้เสมอ
 
 .play flowcontrol/for.go
 
 * For continued
 
-The init and post statements are optional.
+ส่วนกำหนดค่าเริ่มต้น และส่วนปิดท้าย เป็นเพียงตัวเลือกให้มีหรือไม่มีก็ได้
 
 .play flowcontrol/for-continued.go
 
 * For is Go's "while"
 
-At that point you can drop the semicolons: C's `while` is spelled `for` in Go.
+ณ จุดนี้ คุณสามารถลบเซมิโคลอนออกไปได้เลย: `while` ในภาษา C ก็คือ `for` ในภาษา Go นั่นเอง
 
 .play flowcontrol/for-is-gos-while.go
 
 * Forever
 
-If you omit the loop condition it loops forever, so an infinite loop is compactly expressed.
+ถ้าคุณเอาเงื่อนไขออกไปอีก มันจะวนลูปไปตลอดกาล นั่นไง อินฟินิตี้ลูป ก็เขียนกันง่ายๆ แบบนี้เอง
 
 .play flowcontrol/forever.go
 
 * If
 
-Go's `if` statements are like its `for` loops; the expression need not be
-surrounded by parentheses `(`)` but the braces `{`}` are required.
+`if` ใน Go ก็คล้ายๆ กับ `for` ตรงจุดที่ไม่ต้องใช้วงเล็บ `(`)` ครอบเงื่อนไข แต่จำเป็นต้องใส่วงเล็บปีกกา `{`}` เสมอ
 
 .play flowcontrol/if.go
 
 * If with a short statement
 
-Like `for`, the `if` statement can start with a short statement to execute before the condition.
+`if` มีจุดที่คล้ายกับ `for` ตรงที่สามารถมีชุดคำสั่งสั้นๆ ให้ทำก่อนการตรวจสอบเงื่อนไขได้
 
-Variables declared by the statement are only in scope until the end of the `if`.
+ตัวแปรที่ถูกประกาศในชุดคำสั่งนี้ จะมีขอบเขตไปจนจบ `if` เท่านั้น
 
-(Try using `v` in the last `return` statement.)
+(ลองเอา `v` ไปใส่ตรงส่วน `return` ในช่วงท้ายดูสิ)
 
 .play flowcontrol/if-with-a-short-statement.go
 
 * If and else
 
-Variables declared inside an `if` short statement are also available inside any
-of the `else` blocks.
+ตัวแปรที่ถูกประกาศใน `if` แบบ short statement ยังสามารถนำไปใช้ในบล็อคของ `else` ทั้งหมดได้ด้วย
 
-(Both calls to `pow` return their results before the call to `fmt.Println`
-in `main` begins.)
+(การเรียกใช้ `pow` ทั้งสองครั้งจะคืนผลลัพธ์ออกมาก่อนจะเรียก `fmt.Println` ตรงจุดที่ `main` เริ่มทำงาน)
 
 .play flowcontrol/if-and-else.go
 
 * Exercise: Loops and Functions
 
-As a way to play with functions and loops, let's implement a square root function: given a number x, we want to find the number z for which z² is most nearly x.
+มีหนึ่งวิธีที่จะเล่นกับฟังก์ชั่นและลูป เรามาสร้างฟังก์ชั่นหาค่าสแควร์รูทกัน วิธีคือรับตัวเลขเข้ามาค่าหนึ่งชื่อ x เราต้องคืนค่า z ออกไป โดยที่ z² จะต้องมีค่าใกล้เคียงกับ x ให้มากที่สุด
 
-Computers typically compute the square root of x using a loop.
-Starting with some guess z, we can adjust z based on how close z² is to x,
-producing a better guess:
+ปกติแล้วคอมพิวเตอร์จะคำนวณค่าสแควร์รูทด้วยวิธีการวนลูป
+โดยเริ่มต้นจากการเดาค่า z มาสักค่าหนึ่ง และค่อยๆ ปรับค่า z ให้ z² เข้าใกล้ค่า x
+การทำแบบนี้เพื่อใด้เดาได้แม่นยำขึ้น:
 
 	z -= (z*z - x) / (2*z)
 
-Repeating this adjustment makes the guess better and better
-until we reach an answer that is as close to the actual square root as can be.
+การปรับค่านี้ซ้ำๆ จะทำให้การเดาค่าทำได้ได้แม่นยำขึ้นไปเรื่อยๆ
+จนกว่าจะไปเจอคำตอบที่ใกล้เคียงกับค่าสแควร์รูทที่ควรจะเป็น
 
-Implement this in the `func`Sqrt` provided.
-A decent starting guess for z is 1, no matter what the input.
-To begin with, repeat the calculation 10 times and print each z along the way.
-See how close you get to the answer for various values of x (1, 2, 3, ...)
-and how quickly the guess improves.
+ทำฟังก์ชั่น `func`Sqrt` ที่เตรียมไว้ให้นี้
+โดยให้กำหนดการเดาค่า z เริ่มต้นที่เลข 1  ไม่ว่าอินพุตจะเป็นค่าอะไร
+และเริ่มคำนวณซ้ำ 10 รอบ พร้อมกับพิมพ์ค่า z ออกมาทุกครั้ง
+เพิ่อดูว่าแต่ละค่า (1, 2, 3, ...) นั้นได้คำตอบเร็วแค่ไหน
+และจะปรับปรุงให้เดาได้เร็วขึ้นได้อย่างไร
 
-Hint: To declare and initialize a floating point value,
-give it floating point syntax or use a conversion:
+ตัวช่วย: การสร้างตัวแปรและกำหนดค่าเริ่มต้นแบบมีทศนิยม
+ให้กำหนดค่าแบบมีจุดทศนิยมลงไปตรงๆ หรือใช้การแปลงค่ามาช่วย:
 
 	z := 1.0
 	z := float64(1)
 
-Next, change the loop condition to stop once the value has stopped
-changing (or only changes by a very small amount).
-See if that's more or fewer than 10 iterations.
-Try other initial guesses for z, like x, or x/2.
-How close are your function's results to the [[https://golang.org/pkg/math/#Sqrt][math.Sqrt]] in the standard library?
+ขั้นตอนต่อไป ให้เปลี่ยนเงื่อนไขของการวนลูป ให้หยุดเมื่อได้ค่าเดิมซ้ำๆ (หรือเปลี่ยนไปน้อยมากๆ)
+สังเกตดูว่ามันทำมากกว่า หรือน้อยกว่า 10 รอบ
+แล้วลองเปลี่ยนการเดาค่าเริ่มต้นของ z ไปเป็นอย่างอื่นเช่น ใช้ค่า x หรือ x/2
+ผลลัพธ์ที่ได้จากฟังก์ชั่นของคุณ มันใกล้เคียงกับของ [[https://golang.org/pkg/math/#Sqrt][math.Sqrt]] ในไลบรารี่มาตรฐานแค่ไหน?
 
-(*Note:* If you are interested in the details of the algorithm, the z² − x above
-is how far away z² is from where it needs to be (x), and the division by 2z is the derivative
-of z², to scale how much we adjust z by how quickly z² is changing.
-This general approach is called [[https://en.wikipedia.org/wiki/Newton%27s_method][Newton's method]].
-It works well for many functions but especially well for square root.)
+(*หมายเหตุ:* ถ้าคุณมีความสนใจตัวอัลกอรีธึม z² − x ที่อยู่ด้านบน
+ว่า z² จะได้ค่าที่ใกล้เคียงจากค่า (x) ที่มันต้องการแค่ไหน และการหารด้วย 2z เป็นอนุพันธ์ของ z²
+เพื่อปรับค่า z ให้ค่า z² เปลี่ยนได้เร็วขึ้นได้อย่างไร
+วิธีนี้มีชื่อเรียกว่า [[https://en.wikipedia.org/wiki/Newton%27s_method][Newton's method]]
+ในหลายๆ ฟังก์ชั่น มันทำงานได้ดีทีเดียว แต่มันดีเป็นพิเศษเมื่อใช้กับสแควร์รูท)
 
 .play flowcontrol/exercise-loops-and-functions.go
 
 * Switch
 
-A `switch` statement is a shorter way to write a sequence of `if`-`else` statements.
-It runs the first case whose value is equal to the condition expression.
+`switch` เป็นวิธีย่อขั้นตอนการทำ `if`-`else` ให้สั้นลง
+มันจะรันเคสแรกที่มีค่าตรงตามเงื่อนไขที่กำหนด
 
-Go's switch is like the one in C, C++, Java, JavaScript, and PHP,
-except that Go only runs the selected case, not all the cases that follow.
-In effect, the `break` statement that is needed at the end of each case in those
-languages is provided automatically in Go.
-Another important difference is that Go's switch cases need not
-be constants, and the values involved need not be integers.
+switch ในภาษา Go จะเหมือนในภาษาอื่นอย่าง C, C++, Java, JavaScript, และ PHP
+เว้นเสียแต่ว่า ใน Go จะรันเฉพาะเคสที่ถูกเลือกเท่านั้น ไม่ทำเคสถัดไปทั้งหมด
+ด้วยเหตุนี้เอง ภาษาอื่นๆ จึงต้องการ `break` ปิดท้ายในแต่ละเคส ซึ่งใน Go จะทำให้โดยอัตโนมัติ
+และอีกข้อแต่ต่างที่สำคัญเลยก็คือ ในแต่ละเคสของ switch ในภาษา Go นั้น
+ไม่จำเป็นต้องเป็นค่าคงที่ และค่าที่เกี่ยวข้องก็ไม่จำเป็นต้องเป็น integer
 
 .play flowcontrol/switch.go
 
 * Switch evaluation order
 
-Switch cases evaluate cases from top to bottom, stopping when a case succeeds.
+เคสใน switch จะคิดตามลำดับจากบนลงล่าง และหยุดทันทีเมื่อเจอเคสที่ใช่
 
-(For example,
+(ตัวอย่างเช่น,
 
 	switch i {
 	case 0:
 	case f():
 	}
 
-does not call `f` if `i==0`.)
+ถ้า `i==0` ฟังก์ชั่น `f` จะไม่ถูกเรียก)
 
-#appengine: *Note:* Time in the Go playground always appears to start at
-#appengine: 2009-11-10 23:00:00 UTC, a value whose significance is left as an
-#appengine: exercise for the reader.
+#appengine: *หมายเหตุ:* เวลาใน Go playground จะเริ่มต้นที่เวลา
+#appengine: 2009-11-10 23:00:00 UTC เสมอ ความสำคัญของค่านี้ยกให้เป็นการบ้านของผู้อ่าน
 
 .play flowcontrol/switch-evaluation-order.go
 
 * Switch with no condition
 
-Switch without a condition is the same as `switch`true`.
+switch แบบไม่มีเงื่อนไข ก็เหมือนกับ `switch`true` นั่นเอง
 
-This construct can be a clean way to write long if-then-else chains.
+รูปแบบนี้ดูง่ายกว่าการเขียน if-then-else ต่อกันหลายๆชั้น
 
 .play flowcontrol/switch-with-no-condition.go
 
 * Defer
 
-A defer statement defers the execution of a function until the surrounding
-function returns.
+คำสั่ง defer จะหน่วงการเรียกฟังก์ชั่นนี้ไปจนกว่าฟังก์ชั่นที่ครอบมันไว้จะทำงานจนจบ
 
-The deferred call's arguments are evaluated immediately, but the function call
-is not executed until the surrounding function returns.
+อากิวเมนต์ที่ถูก defer ไว้นี้จะถูกประมวลผลทันที แต่จะยังไม่เรียกใช้งานจนกว่าฟังก์ชั่นที่ครอบมันอยู่จะรีเทิร์น
 
 .play flowcontrol/defer.go
 
 * Stacking defers
 
-Deferred function calls are pushed onto a stack. When a function returns, its
-deferred calls are executed in last-in-first-out order.
+ฟังก์ชั่นที่ถูก defer จะถูกดันไปเก็บไว้ในสแต็ก เมื่อฟังก์ชั่นรีเทิร์น
+มันจะค่อยๆ ถูกเรียกตามลำดับ last-in-first-out จากล่างขึ้นบน
 
-To learn more about defer statements read this
+อ่านเพิ่มเติมเกี่ยวกับ defer ได้ที่
 [[https://blog.golang.org/defer-panic-and-recover][blog post]].
 
 .play flowcontrol/defer-multi.go
 
 * Congratulations!
 
-You finished this lesson!
+คุณสำเร็จบทเรียนนี้แล้ว!
 
-You can go back to the list of [[/list][modules]] to find what to learn next, or continue with the [[javascript:click('.next-page')][next lesson]].
+คุณสามารถย้อนกลับไปดูรายการของ [[/list][modules]] เพื่อหาสิ่งที่ต้องการจะเรียนต่อ หรือไปที่ [[javascript:click('.next-page')][next lesson]] ด้วยกันเลย
