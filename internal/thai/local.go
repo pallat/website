@@ -52,11 +52,10 @@ func Main() {
 	log.Println("running in App Engine Standard mode")
 
 	mux := http.NewServeMux()
+	proxy.RegisterHandlers(mux)
 	if err := RegisterHandlers(mux); err != nil {
 		log.Fatal(err)
 	}
-
-	proxy.RegisterHandlers(mux)
 
 	if _port := os.Getenv("PORT"); _port != "" {
 		port = _port
