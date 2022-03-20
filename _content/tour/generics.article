@@ -1,5 +1,4 @@
 Generics
-Go supports generic programming using type parameters. This lesson shows some examples for employing generics in your code.
 Go ให้เราเขียน generic ได้ด้วยการใช้ type parameters โดยในบทนี้จะแสดงให้เห็นตัวอย่างการใช้ generics ในโค้ดของคุณ
 
 The Go Authors
