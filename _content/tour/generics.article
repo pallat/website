@@ -1,42 +1,40 @@
 Generics
 Go supports generic programming using type parameters. This lesson shows some examples for employing generics in your code.
+Go ให้เราเขียน generic ได้ด้วยการใช้ type parameters โดยในบทนี้จะแสดงให้เห็นตัวอย่างการใช้ generics ในโค้ดของคุณ
 
 The Go Authors
 https://golang.org
 
 * Type parameters
 
-Go functions can be written to work on multiple types using type parameters. The
-type parameters of a function appear between brackets, before the function's
-arguments.
+ฟังก์ชันใน Go สามารถถูกเขียนให้ทำงานได้กับ type ที่หลากหลายด้วยการใช้ type parameters
+โดยเจ้า type parameers ของฟังก์ชันจะปรากฎให้เห็นในวงเล็บก้ามปู ก่อนหน้าอากิวเม้นต์ของฟังก์ชัน
 
   func Index[T comparable](s []T, x T) int
 
-This declaration means that `s` is a slice of any type `T` that fulfills the
-built-in constraint `comparable`. `x` is also a value of the same type.
+การประกาศแบบนี้หมายความว่า ตัวแปร `s` คือ slice ของ type `T` โดยใช้ constraint
+จาก built-in ที่ชื่อว่า `comparable` ส่วน `x` เป็นค่าที่มี type เดียวกัน
 
-`comparable` is a useful constraint that makes it possible to use the `==` and
-`!=` operators on values of the type. In this example, we use it to compare a
-value to all slice elements until a match is found. This `Index` function works
-for any type that supports comparison.
+`comparable` เป็น constraint ที่มีประโยชน์ในการช่วยให้ค่านั้นสามารถใช้โอเปอเรเตอร์ `==` และ `!=` ได้
+ในตัวอย่างนี้ เราใช้มันเปรียบเทียบค่าทั้งหมดใน slice แต่ละชิ้นจนกว่าจะเจอค่าที่ตรงกัน
+ืนี่ทำให้ฟังก์ชัน `Index` สามารถทำงานได้กับ type ไหนก็ได้ที่สามารถนำค่ามาเปรียบเทียบกันได้นั่นเอง
 
 .play generics/index.go
 
 * Generic types
 
-In addition to generic functions, Go also supports generic types. A type can
-be parameterized with a type paremeter, which could be useful for implementing
-generic data structures.
+นอกเหนือจากการทำ generic function แล้ว Go ยังสนับสนุนการทำ generic types ด้วย
+โดยสามารถกำหนด type เข้าไปเป็นพารามิเตอร์ ซึ่งเป็นประโยชน์ในการทำ generic ให้กับข้อมูลเชิงโครงสร้างได้อีก
 
-This example demonstrates a simple type declaration for a singly-linked list
-holding any type of value.
+ โดยในตัวอย่างนี้จะเป็นการจำลองตัวอย่างการประกาศ type อย่างง่าย ด้วยการเชื่อมโยง type ประเภท any
+ลงไปในค่า value ที่ถือไว้
 
-As an exercise, add some functionality to this list implementation.
+ลองฝึกฝนด้วยการเพิ่มการทำงานบางอย่างลงไปดู
 
 .play generics/list.go
 
-* Congratulations!
+* ยินดีด้วย!
 
-You finished this lesson!
+คุณเรียนจบบทนี้แล้ว!
 
-You can go back to the list of [[/tour/list][modules]] to find what to learn next, or continue with the [[javascript:click('.next-page')][next lesson]].
+คุณสามารถย้อนกลับไปดูรายการของ [[/list][modules]] เพื่อหาสิ่งที่ต้องการจะเรียนต่อ หรือไปที่ [[javascript:click('.next-page')][next lesson]] ด้วยกันเลย
