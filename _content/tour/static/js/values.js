@@ -9,18 +9,18 @@ angular.module('tour.values', []).
 // List of modules with description and lessons in it.
 value('tableOfContents', [{
     'id': 'mechanics',
-    'title': 'Using the tour',
-    'description': '<p>Welcome to a tour of the <a href="https://go.dev">Go programming language</a>. The tour covers the most important features of the language, mainly:</p>',
+    'title': 'การใช้ทัวร์',
+    'description': '<p>ยินดีต้อนรับสู่ทัวร์แห่ง <a href="https://golang.org">ภาษา Go</a> ทัวร์นี้ครอบคลุมส่วนคุณลักษณะสำคัญต่างๆ ของภาษา หลักๆ คือ</p>',
     'lessons': ['welcome']
 }, {
     'id': 'basics',
-    'title': 'Basics',
-    'description': '<p>The starting point, learn all the basics of the language.</p><p>Declaring variables, calling functions, and all the things you need to know before moving to the next lessons.</p>',
+    'title': 'พื้นฐาน',
+    'description': '<p>จุดตั้งต้นในการเรียนรู้พื้นฐานต่างๆ ของภาษา</p><p>การประกาศตัวแปร การเรียกฟังก์ชั่น และอื่นๆ ที่จำเป็นต้องรู้ก่อนที่จะไปเรียนรู้บทถัดไป</p>',
     'lessons': ['basics', 'flowcontrol', 'moretypes']
 }, {
     'id': 'methods',
-    'title': 'Methods and interfaces',
-    'description': '<p>Learn how to define methods on types, how to declare interfaces, and how to put everything together.</p>',
+    'title': 'เมธอด และอินเตอร์เฟส',
+    'description': '<p>เรียนรู้การนิยาม methods ด้วย types การประกาศ interfaces และการนำเอาทุกอย่างมาทำงานร่วมกัน</p>',
     'lessons': ['methods']
 }, {
     'id': 'generics',
@@ -29,8 +29,8 @@ value('tableOfContents', [{
     'lessons': ['generics']
 }, {
     'id': 'concurrency',
-    'title': 'Concurrency',
-    'description': '<p>Go provides concurrency features as part of the core language.</p><p>This module goes over goroutines and channels, and how they are used to implement different concurrency patterns.</p>',
+    'title': 'การประมวลผลพร้อมกัน',
+    'description': '<p>การประมวลผลพร้อมกัน (concurrency) เป็นคุณลักษณะหลักๆ ของภาษา Go</p><p>โมดูลนี้จะพาไปเรียนรู้ goroutines กับ channels และวิธีการใช้ในการออกแบบพัฒนาการประมวลผลพร้อมกันในแบบต่างๆ</p>',
     'lessons': ['concurrency']
 }]).
 
