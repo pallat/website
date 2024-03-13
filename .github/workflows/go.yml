@@ -22,4 +22,4 @@ jobs:
       uses: 'google-github-actions/deploy-appengine@v2'
       with:
         project_id: ${{ secrets.project_id }}
-        working_directory: tour
+        working_directory: ./tour
