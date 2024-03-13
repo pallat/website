@@ -25,3 +25,4 @@ jobs:
       with:
         project_id: ${{ secrets.project_id }}
         working_directory: ./tour
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}' # Replace with the name of your GitHub Actions secret
