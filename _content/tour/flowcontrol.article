@@ -157,7 +157,7 @@ switch แบบไม่มีเงื่อนไข ก็เหมือน
 มันจะค่อยๆ ถูกเรียกตามลำดับ last-in-first-out จากล่างขึ้นบน
 
 อ่านเพิ่มเติมเกี่ยวกับ defer ได้ที่
-[[https://blog.golang.org/defer-panic-and-recover][blog post]].
+[[https://go.dev/blog/defer-panic-and-recover][blog post]].
 
 .play flowcontrol/defer-multi.go
 

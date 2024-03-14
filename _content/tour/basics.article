@@ -59,7 +59,7 @@ https://golang.org
 
 สังเกตว่า type ของตัวแปรจะอยู่ _ด้านหลัง_ ชื่อตัวแปรนั้น
 
-(หากอยากจะรู้ว่าทำไม type ถึงมีหน้าตาประมาณนี้ ให้ดูต่อที่ [[https://blog.golang.org/gos-declaration-syntax][article on Go's declaration syntax]].)
+(หากอยากจะรู้ว่าทำไม type ถึงมีหน้าตาประมาณนี้ ให้ดูต่อที่ [[https://go.dev/blog/gos-declaration-syntax][article on Go's declaration syntax]].)
 
 .play basics/functions.go
 

@@ -63,12 +63,12 @@ https://golang.org
 #appengine: คุณสามารถใช้ทัวร์โดยไม่มีอินเตอร์เน็ตได้ ด้วยการบิวต์และรันมันบนเครื่องคุณเอง
 #appengine:
 #appengine: สำหรับการรันทัวร์บนเครื่อง คุณต้อง
-#appengine: [[https://golang.org/doc/install][install Go]] ก่อน จากนั้นรันคำสั่งนี้:
+#appengine: [[https://go.dev/doc/install][install Go]] ก่อน จากนั้นรันคำสั่งนี้:
 #appengine:
 #appengine:   go install golang.org/x/website/tour@latest
 #appengine:
 #appengine: มันจะเกิดไบนารี `tour` ขึ้นในไดเร็คทอรี่ `bin` ใน
-#appengine: [[https://golang.org/cmd/go/#hdr-GOPATH_and_Modules][GOPATH]]
+#appengine: [[https://go.dev/cmd/go/#hdr-GOPATH_and_Modules][GOPATH]]
 #appengine: เมื่อคุณรันโปรแกรม tour มันจะเปิดเบาวเซอร์แล้วแสดงทัวร์ในเวอชั่นบนเครื่องขึ้นมา
 #appengine:
 #appengine: และแน่นอนว่าคุณก็ยังใช้ทัวร์บนเว็บนี้ต่อได้เช่นกัน
@@ -88,7 +88,7 @@ https://golang.org
 #appengine:
 #appengine: playground ใช้ Go เวอร์ชั่นเสถียรตัวล่าสุดเสมอ
 #appengine:
-#appengine: อ่าน "[[https://blog.golang.org/playground][Inside the Go Playground]]" เพื่อศึกษาเพิ่มเติม
+#appengine: อ่าน "[[https://go.dev/blog/playground][Inside the Go Playground]]" เพื่อศึกษาเพิ่มเติม
 #appengine:
 #appengine: .play welcome/sandbox.go
 
